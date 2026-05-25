@@ -1,14 +1,18 @@
 from flask import Flask, render_template, request, redirect, session
+import os
 import pandas as pd
 import sqlite3
 from transformers import pipeline
+import random
 
 app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
 app.secret_key = "secret123"
 
 # ---------------- LOAD DATA ----------------
-df = pd.read_csv("dataset/amazon.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+df = pd.read_csv(os.path.join(BASE_DIR, "dataset", "amazon.csv"))
 df.columns = df.columns.str.strip().str.lower()
+
 products = df.to_dict(orient="records")
 
 # ---------------- CLEAN FUNCTIONS ----------------
@@ -49,43 +53,49 @@ for p in products:
     p["actual_price"] = clean_price(p.get("actual_price"))
 
     img = p.get("img_link") or p.get("image_link")
-    if not img or not str(img).startswith("http"):
-        img = "https://via.placeholder.com/300"
+
+    # ✅ FIXED IMAGE ISSUE (Amazon blocked images)
+    if not img or "amazon" in str(img).lower():
+        img = "https://source.unsplash.com/300x300/?product"
 
     p["img_link"] = img
     p["review_content"] = p.get("review_content") or ""
 
-# ---------------- AI MODEL ----------------
+# ---------------- AI MODEL (LIGHT VERSION FOR DEPLOYMENT) ----------------
 classifier = pipeline(
     "sentiment-analysis",
-    model="nlptown/bert-base-multilingual-uncased-sentiment"
+    model="distilbert-base-uncased-finetuned-sst-2-english"
 )
 
-# ---------------- DB INIT ----------------
+# ---------------- DATABASE ----------------
 def init_db():
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
-    c.execute("""CREATE TABLE IF NOT EXISTS users (
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT,
         password TEXT
     )""")
 
-    c.execute("""CREATE TABLE IF NOT EXISTS cart (
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS cart (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
         product_index INTEGER
     )""")
 
-    c.execute("""CREATE TABLE IF NOT EXISTS orders (
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
         product_name TEXT,
         price REAL
     )""")
 
-    c.execute("""CREATE TABLE IF NOT EXISTS reviews (
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS reviews (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_index INTEGER,
         user_id INTEGER,
@@ -165,11 +175,13 @@ def product(index):
         return "Product not found"
 
     product = products[index]
+
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
     sentiment = None
 
+    # -------- ADD REVIEW --------
     if request.method == "POST":
         if "user_id" not in session:
             return redirect("/login")
@@ -189,28 +201,43 @@ def product(index):
 
         sentiment = classifier(review)[0]["label"]
 
+    # -------- FETCH DB REVIEWS --------
     db_reviews = c.execute("""
-        SELECT review, rating FROM reviews
+        SELECT review FROM reviews
         WHERE product_index=?
         ORDER BY id DESC
     """, (index,)).fetchall()
 
     conn.close()
 
-    recommendations = sorted(
-        [(i, p) for i, p in enumerate(products) if i != index],
+    # -------- DATASET REVIEWS --------
+    dataset_reviews = product.get("review_content", "").split("|")
+
+    # -------- MERGE REVIEWS --------
+    all_reviews = dataset_reviews + [r[0] for r in db_reviews]
+
+    # -------- SMART RECOMMENDATIONS --------
+    same_category = [
+        (i, p) for i, p in enumerate(products)
+        if i != index and p["category"] == product["category"]
+    ]
+
+    same_category = sorted(
+        same_category,
         key=lambda x: (x[1]["rating"], x[1]["rating_count"]),
         reverse=True
-    )[:12]
+    )
 
-    reviews_list = product.get("review_content", "").split("|")
+    top = same_category[:6]
+    random_items = random.sample(same_category, min(6, len(same_category)))
+
+    recommendations = top + random_items
 
     return render_template(
         "product.html",
         product=product,
         index=index,
-        reviews=db_reviews,
-        dataset_reviews=reviews_list,
+        reviews=all_reviews,
         recommendations=recommendations,
         sentiment=sentiment
     )
@@ -247,12 +274,7 @@ def cart():
 
     conn.close()
 
-    cart_products = []
-    for r in rows:
-        i = r[0]
-        if 0 <= i < len(products):
-            cart_products.append(products[i])
-
+    cart_products = [products[r[0]] for r in rows if r[0] < len(products)]
     total = sum(p["discounted_price"] for p in cart_products)
 
     return render_template("cart.html", cart_products=cart_products, total=total)
@@ -301,4 +323,5 @@ def orders():
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
