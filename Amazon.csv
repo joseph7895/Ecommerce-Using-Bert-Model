@@ -1,0 +1,39 @@
+product_name,category,discounted_price,actual_price,rating,rating_count,official_link,review_content
+Apple iPhone 13,Electronics,52999,59999,4.5,12000,https://www.apple.com/in/iphone-13/,"Excellent phone | Great camera | Worth money"
+Samsung Galaxy S22,Electronics,57999,64999,4.4,9800,https://www.samsung.com/in/smartphones/galaxy-s22/,"Premium feel | Good battery | Smooth"
+OnePlus 11 5G,Electronics,56999,61999,4.4,8700,https://www.oneplus.in/11,"Fast | Great UI | Nice camera"
+Redmi Note 12,Electronics,17999,19999,4.2,7800,https://www.mi.com/in/product/redmi-note-12/,"Affordable | Good battery | Decent"
+
+MacBook Air M1,Electronics,79999,89999,4.8,15000,https://www.apple.com/in/macbook-air/,"Very fast | Best laptop | Battery beast"
+HP Pavilion Laptop,Electronics,55999,62999,4.3,5400,https://www.hp.com/in-en/laptops/pavilion.html,"Good performance | Lightweight"
+Dell Inspiron 15,Electronics,48999,55999,4.2,4300,https://www.dell.com/en-in/shop/laptops-inspiron,"Value for money | Reliable"
+
+Sony WH-1000XM4,Electronics,22999,29999,4.7,11000,https://www.sony.co.in/electronics/headband-headphones/wh-1000xm4,"Best sound | Noise canceling"
+Boat Rockerz 450,Electronics,1499,2999,4.0,21000,https://www.boat-lifestyle.com/products/rockerz-450,"Cheap | Good bass"
+JBL Tune 760NC,Electronics,5999,7999,4.3,6700,https://in.jbl.com/headphones/JBLT760NC.html,"Clear audio | Comfortable"
+
+Apple Watch Series 8,Electronics,39999,45999,4.6,8000,https://www.apple.com/in/apple-watch-series-8/,"Premium | Health tracking"
+Noise Smart Watch,Electronics,2999,4999,4.1,15000,https://www.gonoise.com/products/smartwatch,"Budget | Nice UI"
+
+Logitech Mouse,Electronics,799,1299,4.4,12000,https://www.logitech.com/en-in/products/mice.html,"Smooth | Reliable"
+HP Wireless Mouse,Electronics,699,999,4.2,9500,https://www.hp.com/in-en/shop/accessories/mice.html,"Comfortable"
+
+Realme Buds Air 3,Electronics,3499,4999,4.2,8800,https://www.realme.com/in/realme-buds-air-3,"Good sound"
+OnePlus Nord Buds,Electronics,2799,3999,4.3,7600,https://www.oneplus.in/nord-buds,"Crisp audio"
+Boat Airdopes 141,Electronics,1299,2999,4.1,20000,https://www.boat-lifestyle.com/products/airdopes-141,"Popular"
+
+Men T-Shirt Black,Clothing,499,999,4.2,5400,https://www.hm.com/in/men/products/t-shirts/,"Comfortable"
+Men Polo T-Shirt,Clothing,799,1299,4.3,4200,https://www.louisphilippe.com/,"Stylish"
+Men Casual Shirt,Clothing,999,1499,4.1,3000,https://www.westside.com/,"Good fit"
+
+Women Kurti,Clothing,899,1499,4.3,3500,https://www.biba.in/,"Beautiful"
+Women Dress,Clothing,1299,1999,4.4,2800,https://www.myntra.com/dresses,"Stylish"
+Women Top,Clothing,699,1199,4.2,2400,https://www.myntra.com/tops,"Trendy"
+
+Sofa Set,Home,19999,25999,4.3,1200,https://www.pepperfry.com/,"Comfortable"
+Dining Table,Home,15999,19999,4.2,900,https://www.pepperfry.com/,"Strong"
+LED TV 43 inch,Home,25999,30999,4.4,3500,https://www.sony.co.in/bravia,"Clear display"
+
+Backpack,Accessories,999,1499,4.3,3200,https://www.wildcraft.com/,"Spacious"
+Wallet Leather,Accessories,499,999,4.2,2800,https://www.titan.co.in/,"Premium"
+Sunglasses,Accessories,799,1299,4.1,2100,https://www.fastrack.in/,"Stylish"

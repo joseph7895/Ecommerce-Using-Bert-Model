@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eaeaea;
+        }
+
+        /* TOP BAR */
+        .navbar {
+            background: #131921;
+            color: white;
+            padding: 16px 25px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 85%;
+            margin: auto;
+            padding: 25px 0;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        /* ORDER CARD */
+        .card {
+            background: white;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 5px;
+        }
+
+        .price {
+            color: #B12704;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* STATUS */
+        .status {
+            padding: 6px 12px;
+            background: #d4f8d4;
+            color: #1a7f1a;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* BUTTON */
+        .btn {
+            background: #ff9900;
+            color: black;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #e68a00;
+        }
+
+        /* EMPTY STATE */
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: gray;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    📦 My Orders
+</div>
+
+<div class="container">
+
+    <h2>Your Order History</h2>
+
+    {% if orders|length == 0 %}
+        <div class="empty">
+            <h3>No orders yet 🛒</h3>
+            <p>Start shopping to see your orders here</p>
+        </div>
+    {% endif %}
+
+    {% for o in orders %}
+    <div class="card">
+
+        <div class="left">
+            <div class="product">{{ o[0] }}</div>
+            <div class="price">₹ {{ o[1] }}</div>
+        </div>
+
+        <div class="status">✔ Delivered</div>
+
+    </div>
+    {% endfor %}
+
+    <a href="/" class="btn">⬅ Continue Shopping</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.get('product_name') }}</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f1f3f6;
+            margin: 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        img {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+        }
+
+        .price {
+            color: green;
+            font-weight: bold;
+        }
+
+        .rating {
+            color: orange;
+        }
+
+        .btn {
+            background: #f08804;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        /* ⭐ STAR RATING */
+        .star-rating {
+            direction: rtl;
+            display: inline-flex;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 25px;
+            color: gray;
+            cursor: pointer;
+        }
+        .star-rating input:checked ~ label {
+            color: gold;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: gold;
+        }
+
+        /* ✅ RECOMMEND GRID */
+        .recommend {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .rec-card {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .rec-card img {
+            width: 120px;
+            height: 120px;
+        }
+
+        /* ✅ REVIEW GRID (UPDATED) */
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .review-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .review-rating {
+            color: #f5a623;
+            font-weight: bold;
+        }
+
+        .review-text {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+            transition: 0.2s;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+      /* =========================
+   /* =========================
+   ⭐ REVIEW SECTION (MORE REVIEWS + BETTER STAR UI)
+========================= */
+
+.review-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Each review stacked vertically like your example */
+.review-card {
+    width: 60%;
+    background: white;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+/* STAR + NUMBER */
+.review-rating {
+    color: #f5a623;
+    font-weight: bold;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* REVIEW TEXT */
+.review-text {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* HOVER (optional) */
+.review-card:hover {
+    transform: translateY(-2px);
+    transition: 0.2s;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .review-card {
+        width: 90%;
+    }
+}
+.review-text {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+
+}
+
+/* Convert | into line breaks visually */
+.review-text {
+    word-break: break-word;
+}
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- PRODUCT -->
+<div class="card">
+
+    <img src="{{ product.get('img_link') if product.get('img_link') else 'https://via.placeholder.com/200' }}">
+
+    <h2>{{ product.get('product_name') }}</h2>
+
+    <p class="rating">⭐ {{ product.get('rating') }} ({{ product.get('rating_count') }})</p>
+
+    <p class="price">₹ {{ product.get('discounted_price') }}</p>
+
+    <a href="/add_to_cart/{{ index }}" class="btn">Add to Cart</a>
+    <a href="/buy/{{ index }}" class="btn">Buy Now</a>
+
+    <h3>Add Your Review</h3>
+
+    <form method="POST">
+        <textarea name="review" placeholder="Write review..." required></textarea><br><br>
+
+        <div class="star-rating">
+            <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+            <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+            <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+            <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+            <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+        </div>
+
+        <br><br>
+
+        <button type="submit" class="btn">Submit Review</button>
+    </form>
+
+</div>
+
+<!-- ✅ DATASET REVIEWS (STAR FORMAT) -->
+<h3>Customer Reviews</h3>
+
+<div class="review-grid">
+
+{% for review in dataset_reviews %}
+
+    {% if review.strip() %}
+
+    <div class="review-card">
+
+        <div class="review-header">
+            <span class="review-rating">
+                ⭐ {{ range(3,6) | random }}
+            </span>
+        </div>
+
+        <div class="review-text">
+            {{ review }}
+        </div>
+
+    </div>
+
+    {% endif %}
+
+{% endfor %}
+
+</div>
+
+
+<!-- ✅ USER REVIEWS -->
+{% if reviews %}
+<div class="review-grid">
+    {% for r in reviews %}
+    <div class="review-card">
+        <div class="review-header">
+            <span class="review-rating">⭐ {{ r[1] }}</span>
+        </div>
+        <div class="review-text">
+            {{ r[0] }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p></p>
+{% endif %}
+
+<!-- RECOMMENDATIONS -->
+<h3>Recommended Products</h3>
+
+<div class="recommend">
+{% for i, rec in recommendations %}
+<a href="/product/{{ i }}">
+<div class="rec-card">
+
+    <img src="{{ rec.get('img_link') }}" 
+         onerror="this.onerror=null;this.src='https://source.unsplash.com/300x300/?product';">
+
+    <p>{{ rec.get('product_name') }}</p>
+
+    <p class="price">₹ {{ rec.get('discounted_price') }}</p>
+
+    <p style="color:orange;font-size:13px;">
+        ⭐ {{ rec.get('rating','4') }}
+    </p>
+
+</div>
+</a>
+{% endfor %}
+</div>
+
+</div>
+
+</body>
+</html>

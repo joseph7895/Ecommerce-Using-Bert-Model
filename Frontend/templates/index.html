@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop Smart</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(to right, #eef2f3, #dfe9f3);
+        }
+
+        /* 🌈 NAVBAR */
+        .navbar {
+            background: linear-gradient(90deg, #131921, #232f3e);
+            padding: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            color: #ff9900;
+            font-weight: bold;
+        }
+
+        .search-box input {
+            padding: 8px;
+            width: 300px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+
+        .search-box button {
+            padding: 8px 12px;
+            background: #ff9900;
+            border: none;
+            cursor: pointer;
+            color: white;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .search-box button:hover {
+            background: #e68a00;
+        }
+
+        /* 🎯 FILTER */
+        .filter {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* 🧱 GRID */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* 🛍️ CARD */
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+            transition: 0.3s;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            min-height: 320px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            height: 40px;
+            overflow: hidden;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .price {
+            color: #2ecc71;
+            font-weight: bold;
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        .rating {
+            color: #f39c12;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .reviews {
+            font-size: 12px;
+            color: #777;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        /* 📱 MOBILE */
+        @media (max-width: 600px) {
+            .search-box input {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">🛒 Shop Smart</div>
+
+    <form method="GET" action="/">
+        <div class="search-box">
+            <input type="text" name="search" placeholder="Search products...">
+            <button>Search</button>
+        </div>
+    </form>
+
+    <a href="/cart" style="color:white;">🛒 Cart</a>
+</div>
+
+<div class="filter">
+    <form method="GET" action="/">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            <option>Electronics</option>
+            <option>Clothing</option>
+            <option>Home</option>
+            <option>Accessories</option>
+        </select>
+    </form>
+</div>
+
+<div class="container">
+{% for p in products %}
+<a href="/product/{{ loop.index0 }}">
+<div class="card">
+
+    <img src="{{ p.get('img_link') }}" 
+         onerror="this.onerror=null;this.src='https://source.unsplash.com/300x300/?product';">
+
+    <h3>{{ p.get('product_name','No Name') }}</h3>
+
+    <p class="price">₹ {{ p.get('discounted_price','0') }}</p>
+
+    <p class="rating">⭐ {{ p.get('rating','4') }}</p>
+
+    <p class="reviews">
+        {{ p.get('rating_count','100') }} reviews
+    </p>
+
+</div>
+</a>
+{% endfor %}
+</div>
+
+</body>
+</html>
