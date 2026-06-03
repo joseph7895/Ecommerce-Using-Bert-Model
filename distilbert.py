@@ -1,13 +1,18 @@
 from flask import Flask, render_template, request, redirect, session
 import pandas as pd
 import sqlite3
+import os
 from transformers import pipeline
 
 app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
 app.secret_key = "secret123"
 
 # ---------------- LOAD DATA ----------------
-df = pd.read_csv("dataset/amazon.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+csv_path = os.path.join(BASE_DIR, "Dataset", "amazon.csv")
+if not os.path.exists(csv_path):
+    csv_path = os.path.join(BASE_DIR, "dataset", "amazon.csv")
+df = pd.read_csv(csv_path)
 df.columns = df.columns.str.strip().str.lower()
 
 products = df.to_dict(orient="records")
@@ -22,7 +27,7 @@ def clean_price(val):
         return 0
 
 for p in products:
-    p['img_link'] = str(p.get('image_link') or "").strip()
+    p['img_link'] = str(p.get('img_link') or "").strip()
 
     if not p['img_link'].startswith("http"):
         p['img_link'] = "https://via.placeholder.com/150"
@@ -182,12 +187,16 @@ def product(index):
         reverse=True
     )[:12]
 
+    # Split dataset reviews by comma safely
+    dataset_reviews = [r.strip() for r in product.get('reviews', '').split(',') if r.strip()]
+
     return render_template("product.html",
                            product=product,
                            recommendations=recommendations,
                            sentiment=sentiment,
                            index=index,
-                           reviews=db_reviews)
+                           reviews=db_reviews,
+                           dataset_reviews=dataset_reviews)
 
 # ---------------- CART ----------------
 @app.route("/add_to_cart/<int:index>")
@@ -213,7 +222,14 @@ def cart():
     rows = c.execute("SELECT product_index FROM cart WHERE user_id=?", (session["user_id"],)).fetchall()
     conn.close()
 
-    cart_products = [products[row[0]] for row in rows if row[0] < len(products)]
+    cart_products = []
+    for row in rows:
+        idx = row[0]
+        if idx < len(products):
+            p = products[idx].copy()
+            p['original_index'] = idx
+            cart_products.append(p)
+            
     total = sum(float(p.get('discounted_price', 0)) for p in cart_products)
 
     return render_template("cart.html", cart_products=cart_products, total=total)

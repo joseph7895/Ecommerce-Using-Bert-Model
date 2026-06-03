@@ -1,51 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Signup</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — ShopSmart</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --accent: #10b981;
+            --bg-grad: linear-gradient(135deg, #090d16 0%, #1e1b4b 100%);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: Arial;
-            background: linear-gradient(to right, #f08804, #ff9900);
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: var(--text-main);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 20px;
         }
 
         .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 320px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 400px;
             text-align: center;
-            box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+            box-shadow: var(--card-shadow);
         }
 
-        h2 {
+        .logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
+        .logo-icon {
+            color: var(--primary-light);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
         input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        input:focus {
+            border-color: var(--primary-light);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
         }
 
         .btn {
-            background: #131921;
+            background: var(--primary);
             color: white;
-            padding: 10px;
+            padding: 14px;
             border: none;
             width: 100%;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+        }
+
+        p {
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--text-muted);
         }
 
         a {
             text-decoration: none;
-            color: #007185;
+            color: var(--primary-light);
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: white;
         }
     </style>
 </head>
@@ -53,19 +162,34 @@
 <body>
 
 <div class="box">
+    <div class="logo-row">
+        <i data-lucide="shopping-bag" class="logo-icon" size="30"></i>
+        <span class="logo-text">ShopSmart</span>
+    </div>
 
-    <h2>📝 Create Account</h2>
+    <h2>Join us! Create a free account.</h2>
 
     <form method="POST">
-        <input name="username" placeholder="Username" required>
-        <input name="password" type="password" placeholder="Password" required>
+        <div class="input-group">
+            <i data-lucide="user" size="18"></i>
+            <input name="username" placeholder="Choose Username" required autocomplete="username">
+        </div>
+        <div class="input-group">
+            <i data-lucide="lock" size="18"></i>
+            <input name="password" type="password" placeholder="Choose Password" required autocomplete="new-password">
+        </div>
 
-        <button class="btn">Signup</button>
+        <button class="btn">
+            <span>Create Account</span>
+            <i data-lucide="user-plus" size="16"></i>
+        </button>
     </form>
 
-    <p>Already have account? <a href="/login">Login</a></p>
-
+    <p>Already have an account? <a href="/login">Login here</a></p>
 </div>
 
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

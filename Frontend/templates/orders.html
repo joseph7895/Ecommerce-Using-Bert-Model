@@ -1,139 +1,283 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Orders</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders — ShopSmart History</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #eaeaea;
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --accent: #10b981;
+            --bg-grad: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --nav-bg: linear-gradient(135deg, #090d16 0%, #1e1b4b 100%);
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 25px 50px -12px rgba(79, 70, 229, 0.15);
         }
 
-        /* TOP BAR */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 🌈 NAVBAR */
         .navbar {
-            background: #131921;
+            background: var(--nav-bg);
+            padding: 18px 4%;
             color: white;
-            padding: 16px 25px;
-            font-size: 22px;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            color: var(--primary-light);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            font-size: 15px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
         }
 
         .container {
-            width: 85%;
+            flex: 1;
+            width: 90%;
+            max-width: 1000px;
             margin: auto;
-            padding: 25px 0;
+            padding: 40px 0;
         }
 
         h2 {
-            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         /* ORDER CARD */
         .card {
             background: white;
-            padding: 18px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f1f5f9;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.06);
+            border-color: rgba(79, 70, 229, 0.1);
         }
 
         .left {
             display: flex;
             flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+            padding-right: 20px;
         }
 
         .product {
-            font-size: 18px;
-            font-weight: bold;
-            color: #111;
-            margin-bottom: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .price {
-            color: #B12704;
+            color: var(--accent);
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         /* STATUS */
         .status {
-            padding: 6px 12px;
-            background: #d4f8d4;
-            color: #1a7f1a;
+            padding: 6px 14px;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
             border-radius: 20px;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
         /* BUTTON */
         .btn {
-            background: #ff9900;
-            color: black;
-            padding: 10px 14px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
             border: none;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-weight: 600;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             margin-top: 20px;
+            transition: all 0.2s ease;
         }
 
         .btn:hover {
-            background: #e68a00;
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
         /* EMPTY STATE */
         .empty {
+            background: white;
+            padding: 60px 40px;
             text-align: center;
-            padding: 50px;
-            color: gray;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-muted);
         }
 
+        .empty-icon {
+            color: var(--primary-light);
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
 <body>
 
-<div class="navbar">
-    📦 My Orders
-</div>
+<nav class="navbar">
+    <a href="/" class="logo-container">
+        <i data-lucide="shopping-bag" class="logo-icon" size="28"></i>
+        <span class="logo">ShopSmart</span>
+    </a>
+    <div class="nav-links">
+        <a href="/" class="nav-btn">
+            <i data-lucide="home" size="18"></i>
+            <span>Home</span>
+        </a>
+        <a href="/cart" class="nav-btn">
+            <i data-lucide="shopping-cart" size="18"></i>
+            <span>Cart</span>
+        </a>
+    </div>
+</nav>
 
 <div class="container">
-
-    <h2>Your Order History</h2>
+    <h2>
+        <i data-lucide="package" style="color: var(--primary)"></i>
+        Your Order History
+    </h2>
 
     {% if orders|length == 0 %}
         <div class="empty">
-            <h3>No orders yet 🛒</h3>
-            <p>Start shopping to see your orders here</p>
+            <i data-lucide="package-x" class="empty-icon" size="48"></i>
+            <h3>No orders placed yet!</h3>
+            <p>Ready to start shopping? Buy products to view their delivery status here.</p>
         </div>
     {% endif %}
 
     {% for o in orders %}
     <div class="card">
-
         <div class="left">
             <div class="product">{{ o[0] }}</div>
-            <div class="price">₹ {{ o[1] }}</div>
+            <div class="price">₹{{ o[1] }}</div>
         </div>
-
-        <div class="status">✔ Delivered</div>
-
+        <div class="status">
+            <i data-lucide="check-circle-2" size="14"></i>
+            <span>Delivered</span>
+        </div>
     </div>
     {% endfor %}
 
-    <a href="/" class="btn">⬅ Continue Shopping</a>
-
+    <a href="/" class="btn">
+        <i data-lucide="arrow-left" size="16"></i>
+        <span>Continue Shopping</span>
+    </a>
 </div>
 
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

@@ -1,211 +1,400 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MyShop Cart</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Shopping Cart — ShopSmart</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        *{
-            box-sizing: border-box;
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --accent: #10b981;
+            --bg-grad: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --nav-bg: linear-gradient(135deg, #090d16 0%, #1e1b4b 100%);
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 25px 50px -12px rgba(79, 70, 229, 0.15);
         }
 
-        html, body{
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            width: 100%;
-            overflow-x: hidden; /* 🔥 FIX HORIZONTAL OVERFLOW */
-            font-family: Arial, sans-serif;
-            background: #eaeaea;
+            font-family: 'Outfit', sans-serif;
         }
 
-        /* NAVBAR */
-        .navbar{
-            background: #131921;
+        body {
+            background: var(--bg-grad);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 🌈 NAVBAR */
+        .navbar {
+            background: var(--nav-bg);
+            padding: 18px 4%;
             color: white;
-            padding: 16px 20px;
-            font-size: 20px;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
         }
 
-        /* MAIN WRAPPER */
-        .container{
-            width: 100%;
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
         }
 
-        h2{
-            margin: 10px 0 20px;
+        .logo-icon {
+            color: var(--primary-light);
         }
 
-        /* GRID LAYOUT */
-        .cart-wrapper{
-            display: grid;
-            grid-template-columns: minmax(0, 2.5fr) minmax(250px, 1fr);
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
             gap: 20px;
         }
 
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            font-size: 15px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* 🧱 MAIN WRAPPER */
+        .container {
+            flex: 1;
+            padding: 40px 4%;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* GRID LAYOUT */
+        .cart-wrapper {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
         /* LEFT SIDE */
-        .cart-items{
+        .cart-items {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            min-width: 0; /* IMPORTANT FIX */
+            gap: 20px;
         }
 
         /* CARD */
-        .card{
+        .card {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            overflow: hidden;
-            min-width: 0;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f1f5f9;
+            align-items: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .card img{
-            width: 100px;
-            height: 100px;
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.08);
+        }
+
+        .card img {
+            width: 120px;
+            height: 120px;
             object-fit: contain;
+            border-radius: 12px;
+            background: #f8fafc;
+            padding: 10px;
             flex-shrink: 0;
         }
 
-        .info{
+        .info {
             flex: 1;
-            min-width: 0; /* CRITICAL FIX */
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .title{
-            font-size: 15px;
-            font-weight: bold;
-            color: #111;
-
-            /* SAFE TEXT WRAP */
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .price{
-            color: #B12704;
-            font-size: 18px;
-            font-weight: bold;
-            margin: 6px 0;
+        .price {
+            color: var(--accent);
+            font-size: 20px;
+            font-weight: 700;
         }
 
-        .btn{
-            display: inline-block;
-            padding: 8px 12px;
-            background: #ff9900;
-            color: black;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-weight: 600;
             font-size: 14px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            width: fit-content;
         }
 
-        .btn:hover{
-            background: #e68a00;
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
         /* RIGHT SUMMARY */
-        .summary{
+        .summary {
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            height: fit-content;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: sticky;
+            top: 100px;
         }
 
-        .total{
+        .summary h3 {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+
+        .total {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkout-box {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .checkout-box span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkout {
+            width: 100%;
+            background: var(--accent);
+            padding: 14px;
+            font-size: 16px;
+        }
+
+        .checkout:hover {
+            background: #059669;
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.25);
+        }
+
+        /* EMPTY STATE */
+        .empty {
+            background: white;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            color: var(--primary-light);
             margin-bottom: 10px;
         }
 
-        .checkout{
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        /* EMPTY */
-        .empty{
-            background: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px;
-            color: gray;
-        }
-
         /* CONTINUE */
-        .continue{
-            display: inline-block;
-            margin-top: 20px;
-            color: #007185;
+        .continue {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 25px;
+            color: var(--primary);
             text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .continue:hover {
+            color: var(--primary-dark);
         }
 
         /* RESPONSIVE */
         @media(max-width: 900px){
-            .cart-wrapper{
+            .cart-wrapper {
                 grid-template-columns: 1fr;
             }
+            .summary {
+                position: static;
+            }
         }
-
     </style>
 </head>
-
 <body>
 
-<div class="navbar">
-    🛒 MyShop Cart
-</div>
+<nav class="navbar">
+    <a href="/" class="logo-container">
+        <i data-lucide="shopping-bag" class="logo-icon" size="28"></i>
+        <span class="logo">ShopSmart</span>
+    </a>
+    <div class="nav-links">
+        <a href="/" class="nav-btn">
+            <i data-lucide="home" size="18"></i>
+            <span>Home</span>
+        </a>
+    </div>
+</nav>
 
 <div class="container">
-
-    <h2>Your Shopping Cart</h2>
+    <h2>
+        <i data-lucide="shopping-cart" style="color: var(--primary)"></i>
+        Your Shopping Cart
+    </h2>
 
     <div class="cart-wrapper">
-
         <!-- LEFT -->
         <div class="cart-items">
-
             {% if cart_products|length == 0 %}
                 <div class="empty">
-                    Your cart is empty 🛒
+                    <i data-lucide="shopping-cart" class="empty-icon" size="48"></i>
+                    <h3>Your cart is empty!</h3>
+                    <p>Add some products to get started on your shopping journey.</p>
                 </div>
             {% endif %}
 
             {% for item in cart_products %}
             <div class="card">
-
-                <img src="{{ item.get('img_link') if item.get('img_link') else 'https://via.placeholder.com/150' }}">
+                <img src="{{ item.get('img_link') if item.get('img_link') else 'https://via.placeholder.com/150?text=Product+Image' }}"
+                     alt="{{ item['product_name'] }}"
+                     onerror="this.onerror=null;this.src='https://via.placeholder.com/150?text=Product+Image';">
 
                 <div class="info">
                     <div class="title">{{ item['product_name'] }}</div>
-                    <div class="price">₹ {{ item['discounted_price'] }}</div>
-
-                    <a href="/buy/{{ loop.index0 }}" class="btn">Buy Now</a>
+                    <div class="price">₹{{ item['discounted_price'] }}</div>
+                    <a href="/buy/{{ item['original_index'] }}" class="btn">
+                        <i data-lucide="credit-card" size="16"></i>
+                        Buy Now
+                    </a>
                 </div>
-
             </div>
             {% endfor %}
-
         </div>
 
         <!-- RIGHT -->
         <div class="summary">
-            <div class="total">Total: ₹ {{ total }}</div>
-            <button class="btn checkout">Proceed to Checkout</button>
+            <h3>Order Summary</h3>
+            <div class="total">
+                <span>Total:</span>
+                <span style="color: var(--accent)">₹{{ total }}</span>
+            </div>
+            <div class="checkout-box">
+                <span><i data-lucide="shield-check" size="14" style="color: var(--accent)"></i> Secure Checkout & Payments</span>
+                <span><i data-lucide="truck" size="14" style="color: var(--primary-light)"></i> Fast Global Shipping</span>
+                <span><i data-lucide="rotate-ccw" size="14" style="color: var(--primary-light)"></i> 15-Day Easy Returns</span>
+            </div>
+            <button class="btn checkout">
+                <i data-lucide="check-circle" size="18"></i>
+                Proceed to Checkout
+            </button>
         </div>
-
     </div>
 
-    <a href="/" class="continue">← Continue Shopping</a>
-
+    <a href="/" class="continue">
+        <i data-lucide="arrow-left" size="16"></i>
+        <span>Continue Shopping</span>
+    </a>
 </div>
 
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>
