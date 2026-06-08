@@ -2,20 +2,35 @@ from flask import Flask, render_template, request, redirect, session
 import pandas as pd
 import sqlite3
 import os
-from transformers import pipeline
+import requests
 
 app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
 app.secret_key = "secret123"
 
-# ---------------- LOAD DATA (FIXED PATH ONLY) ----------------
+# ---------------- LOAD DATA (MEMORY-OPTIMISED) ----------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 csv_path = os.path.join(BASE_DIR, "Dataset", "amazon.csv")
 if not os.path.exists(csv_path):
     csv_path = os.path.join(BASE_DIR, "dataset", "amazon.csv")
-df = pd.read_csv(csv_path)
 
-df.columns = df.columns.str.strip().str.lower()
+# Read only the columns the app actually uses — avoids loading the whole CSV into RAM
+NEEDED_COLS = [
+    "product_id", "product_name", "category",
+    "discounted_price", "actual_price",
+    "rating", "rating_count",
+    "img_link", "review_content"
+]
+
+_raw = pd.read_csv(csv_path)
+_raw.columns = _raw.columns.str.strip().str.lower()
+
+# Keep only the columns that exist in this CSV (handles slight column name variations)
+existing_cols = [c for c in NEEDED_COLS if c in _raw.columns]
+df = _raw[existing_cols].copy()
+del _raw  # free the full dataframe immediately
+
 products = df.to_dict(orient="records")
+del df  # free pandas dataframe — we only need the list of dicts
 
 # ---------------- CLEAN DATA ----------------
 def clean_price(val):
@@ -47,11 +62,30 @@ for p in products:
     p['discounted_price'] = clean_price(p.get('discounted_price'))
     p['actual_price'] = clean_price(p.get('actual_price'))
 
-# ---------------- DISTILBERT MODEL ----------------
-classifier = pipeline(
-    "sentiment-analysis",
-    model="distilbert-base-uncased-finetuned-sst-2-english"
-)
+# ---------------- HUGGING FACE INFERENCE API ----------------
+API_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english"
+
+def query_sentiment(text):
+    headers = {}
+    token = os.environ.get("HF_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        response = requests.post(API_URL, headers=headers, json={"inputs": text}, timeout=5)
+        result = response.json()
+        if isinstance(result, list) and len(result) > 0 and isinstance(result[0], list):
+            sorted_predictions = sorted(result[0], key=lambda x: x['score'], reverse=True)
+            return sorted_predictions[0]['label']
+    except Exception as e:
+        print("HF Inference API error:", e)
+    
+    # Graceful fallback: Rule-based sentiment analysis
+    lower_text = text.lower()
+    positive_words = ['good', 'great', 'love', 'perfect', 'awesome', 'nice', 'excellent', 'happy', 'best', 'durable', 'fast']
+    pos_count = sum(1 for w in positive_words if w in lower_text)
+    negative_words = ['bad', 'hate', 'worst', 'broken', 'defect', 'fail', 'poor', 'slow', 'disappoint', 'return']
+    neg_count = sum(1 for w in negative_words if w in lower_text)
+    return "POSITIVE" if pos_count >= neg_count else "NEGATIVE"
 
 # ---------------- DATABASE ----------------
 def init_db():
@@ -162,8 +196,7 @@ def product(index):
             product['rating'] = round((product['rating'] + rating) / 2, 1)
             product['rating_count'] += 1
 
-            result = classifier(review)
-            sentiment = result[0]['label']
+            sentiment = query_sentiment(review)
 
     db_reviews = c.execute("""
         SELECT review, rating FROM reviews

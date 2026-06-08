@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import pandas as pd
 import sqlite3
 import os
-from transformers import pipeline
+import requests
 
 app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
 app.secret_key = "secret123"
@@ -47,11 +47,30 @@ for p in products:
     p['discounted_price'] = clean_price(p.get('discounted_price'))
     p['actual_price'] = clean_price(p.get('actual_price'))
 
-# ---------------- DISTILBERT MODEL ----------------
-classifier = pipeline(
-    "sentiment-analysis",
-    model="distilbert-base-uncased-finetuned-sst-2-english"
-)
+# ---------------- HUGGING FACE INFERENCE API ----------------
+API_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english"
+
+def query_sentiment(text):
+    headers = {}
+    token = os.environ.get("HF_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        response = requests.post(API_URL, headers=headers, json={"inputs": text}, timeout=5)
+        result = response.json()
+        if isinstance(result, list) and len(result) > 0 and isinstance(result[0], list):
+            sorted_predictions = sorted(result[0], key=lambda x: x['score'], reverse=True)
+            return sorted_predictions[0]['label']
+    except Exception as e:
+        print("HF Inference API error:", e)
+    
+    # Graceful fallback: Rule-based sentiment analysis
+    lower_text = text.lower()
+    positive_words = ['good', 'great', 'love', 'perfect', 'awesome', 'nice', 'excellent', 'happy', 'best', 'durable', 'fast']
+    pos_count = sum(1 for w in positive_words if w in lower_text)
+    negative_words = ['bad', 'hate', 'worst', 'broken', 'defect', 'fail', 'poor', 'slow', 'disappoint', 'return']
+    neg_count = sum(1 for w in negative_words if w in lower_text)
+    return "POSITIVE" if pos_count >= neg_count else "NEGATIVE"
 
 # ---------------- DATABASE ----------------
 def init_db():
@@ -165,8 +184,7 @@ def product(index):
             product['rating_count'] += 1
 
             # ---------------- DISTILBERT SENTIMENT ----------------
-            result = classifier(review)
-            sentiment = result[0]['label']  # POSITIVE / NEGATIVE
+            sentiment = query_sentiment(review)
 
     # fetch reviews
     db_reviews = c.execute("""

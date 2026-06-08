@@ -1,6 +1,4 @@
 flask
 pandas
-transformers
---extra-index-url https://download.pytorch.org/whl/cpu
-torch
 gunicorn
+requests
