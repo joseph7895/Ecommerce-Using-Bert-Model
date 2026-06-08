@@ -4,7 +4,7 @@ import sqlite3
 import os
 import requests
 
-app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
+app = Flask(__name__, template_folder="Frontend/templates", static_folder="Frontend/static")
 app.secret_key = "secret123"
 
 # ---------------- LOAD DATA (MEMORY-OPTIMISED) ----------------
